@@ -1,0 +1,7 @@
+.boton{
+        @include boton(rgba(13, 128, 242, 1),rgb(15, 73, 131),block,rgb(255, 255, 255),rgb(255, 255, 255));
+    margin-top: 1rem;
+width:50%;
+margin: 0 auto;
+display: inline-block;
+}
