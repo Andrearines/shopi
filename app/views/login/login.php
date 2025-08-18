@@ -1,15 +1,15 @@
 <div class="contenedor">
     <h2 class="titulo">login</h2>
     <div class="form-c">
-        <form class="form" method="post">
+        <form id="form"class="form" method="post">
            
             <div class="form-group">
                 <label for="">email</label>
-                <input type="email">
+                <input type="email" name="email">
             </div>
             <div class="form-group">
                 <label for="">password</label>
-                <input type="text">
+                <input type="text" name="password">
                 
             </div>
            

@@ -19,7 +19,11 @@ $r->get("/register/confirm",[login::class,'confirm']);
 
 $r->post("/api/register",[loginA::class,'register']);
 $r->get("/api/register/confirm",[loginA::class,'confirm']);
+$r->post("/api/register/login",[loginA::class,'login']);
+$r->get("/api/Isauth",[loginA::class,'Isauth']);
 
 //home
 $r->get("/home",[paginas::class,'index']);
+// API Routes(login)
+
 $r->Rutas();

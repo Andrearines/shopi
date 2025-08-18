@@ -3,12 +3,45 @@ namespace controllers\API;
 
 use models\email;
 use models\user;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
 class loginA{
 
+    public static function Isauth(){
+        $key="prE!X2wW^*gH0MQ";
+       
+    $token = $_COOKIE['access_token'] ?? null;
+        if($token){
+            $payload = JWT::decode($token, new Key($key, 'HS256'));
+            echo json_encode("Usuario autenticado: " . $payload->id);
+            
+         
+            exit;
+        }else{
+            http_response_code(401);
+            echo json_encode("token no valdio");
+            exit;
+        }
+    }
+
+    public static function login(){
+        $use= new user($_POST);
+        $r= $use->validate_l();
+        if(empty($r)){
+            $use->login();
+            echo json_encode(["ok" => true]);
+            
+        }else{
+            echo json_encode($r);
+            exit;
+        }
+    }
     public static function confirm(){
         $user=new user($_GET);
         $r=$user->varificar();
         echo json_encode($r);
+        exit;
         
       }
     public static function register(){  

@@ -1,5 +1,7 @@
 <?php
 namespace models;
+
+use Firebase\JWT\JWT;
 class user extends main{
    
     public static $table="users";
@@ -42,6 +44,69 @@ class user extends main{
         return $token;
     }
 
+
+
+    public function validate_l(){
+        if (!$this->email || $this->email= "") {
+            static::$errors[] = "El email es obligatorio";
+        } elseif (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            static::$errors[] = "El email no es válido";
+        }
+
+        if (!$this->password || $this->password="") {
+            static::$errors[] = "La contraseña es obligatoria";
+        } elseif (strlen($this->password) < 6) {
+            static::$errors[] = "La contraseña debe tener al menos 6 caracteres";
+        }
+    }
+
+    public function login() {
+        if (!$this->existeUser()) {
+            self::$errors["error"][] = "no existe el user";
+            return self::$errors;
+        }
+    
+        // Traemos todo lo que necesitamos de una sola vez
+        $user = self::findBy("email", $this->email, [
+            "id", "nombre", "email", "password", "tienda_id", 
+            "saldo", "moderador", "confirmado", "img"
+        ]);
+    
+        if (!$user) {
+            self::$errors["error"][] = "no existe el user";
+            return self::$errors;
+        }
+    
+        if (!password_verify($this->password, $user->password)) {
+            self::$errors["error"][] = "contraseña incorrecta";
+            return self::$errors;
+        }
+    
+        if ($user->confirmado != 1) {
+            self::$errors["error"][] = "no está confirmado el user";
+            return self::$errors;
+        }
+    
+        // Si todo bien, generamos el token
+        $key = "prE!X2wW^*gH0MQ";
+        $payload = [
+            "id" => $user->id,
+            "login" => true,
+            "moderador" => $user->moderador ?? 0,
+            "img" => $user->img,
+        ];
+    
+        $token= JWT::encode($payload, $key, 'HS256');
+
+        setcookie("access_token", $token, [
+            'expires' => time() + 3600,
+            'path' => '/',
+            'secure' => false,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
+       
+    }
     public function validate_r()
     {
        static::$errors = [];

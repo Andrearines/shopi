@@ -3,7 +3,7 @@ namespace controllers;
 use MVC\Router;
 class login{
     public static function login(Router $r){
-        $r->view("/login/login.php",[]);
+        $r->view("/login/login.php",["script"=>"pages/login"]);
     }
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
