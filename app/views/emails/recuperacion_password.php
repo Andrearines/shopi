@@ -87,11 +87,7 @@
             
             <p>Para completar el proceso de recuperación, utiliza el siguiente código de verificación:</p>
             
-            <div class="token-box">
-                <strong><?php echo htmlspecialchars($token); ?></strong>
-            </div>
-            
-            <p>O haz clic en el siguiente enlace para restablecer tu contraseña directamente:</p>
+            <p>haz clic en el siguiente enlace para restablecer tu contraseña directamente:</p>
             
             <div style="text-align: center;">
                 <a href="<?php echo $app_url; ?>/reset-password?token=<?php echo urlencode($token); ?>" class="btn">Restablecer Contraseña</a>
@@ -100,9 +96,9 @@
             <div class="warning">
                 <strong>⚠️ Importante:</strong>
                 <ul>
-                    <li>Este enlace es válido por 24 horas</li>
+                  
                     <li>Si no solicitaste este cambio, puedes ignorar este email</li>
-                    <li>Nunca compartas este código con nadie</li>
+                    
                 </ul>
             </div>
             
@@ -111,7 +107,7 @@
         
         <div class="footer">
             <p>Este email fue enviado desde <?php echo $app_name; ?></p>
-            <p>Por seguridad, este enlace expirará en 24 horas.</p>
+          
             <p>&copy; <?php echo date('Y'); ?> <?php echo $app_name; ?>. Todos los derechos reservados.</p>
         </div>
     </div>

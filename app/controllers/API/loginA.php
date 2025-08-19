@@ -8,6 +8,33 @@ use Firebase\JWT\Key;
 
 class loginA{
 
+    public static function reset(){
+        $r=[];
+        $user = new user($_POST);
+        $r=$user->validate_c();
+        if(empty($r)){
+           $user->reset();
+            echo  json_encode(true);
+
+        }else{
+            echo  json_encode($r);
+        }
+    }
+
+    public static function forget(){
+        $r=[];
+        $user = new user($_POST);
+        
+        $r=$user->validate_f();
+        if(empty($r)){
+
+           $user->resetEmail();
+            echo  json_encode(["ok"=>true]);
+
+        }else{
+            echo  json_encode($r);
+        }
+    }
     public static function Isauth(){
         $key="prE!X2wW^*gH0MQ";
        
@@ -29,8 +56,12 @@ class loginA{
         $use= new user($_POST);
         $r= $use->validate_l();
         if(empty($r)){
-            $use->login();
-            echo json_encode(["ok" => true]);
+            $r =$use->login();
+            if(empty($r)){
+                echo json_encode(["ok" => true]);
+            }else{
+                echo json_encode($r);
+            }
             
         }else{
             echo json_encode($r);

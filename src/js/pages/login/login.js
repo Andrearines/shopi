@@ -57,15 +57,15 @@ function form(){
                     window.location.href = '/home'
                 })
             } else {
-                Swal.fire({
+                Swal.fire({ 
                     icon: 'error',
-                    title: 'Error con el login',
-                    text: result
+                    title: result.error,
+                 
                 })
             }
             
         } catch (error) {
-          console.log(error)
+          console.log(error) 
             Swal.fire({
                 icon: 'error',
                 title: 'Error de conexión',

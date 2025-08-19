@@ -83,8 +83,7 @@ class email {
                 $this->mailer->Body = $mensaje;
             }
             
-            return $this->mailer->send();
-            
+           return  $this->mailer->send();
         } catch (Exception $e) {
             throw new Exception("Error al enviar email: " . $e->getMessage());
         }

@@ -44,20 +44,66 @@ class user extends main{
         return $token;
     }
 
+    public function reset(){
+        $this->password_hash();
+        $stmt = self::$db->prepare("UPDATE users SET password = ? ,token = '' WHERE token = ?");
+        $stmt->bind_param("ss", $this->password, $this->token);
+        $stmt->execute();
+        self::clearCache();
+    }
 
+    public function resetEmail(){
+        $r = self::findBy("email", $this->email);
+        $token = $this->create_token();
+        $email = new email();
 
+        $email->enviarRecuperacionPassword($this->email, $token, $r->nombre);
+        $stmt = self::$db->prepare("UPDATE " . static::$table . " SET token = ? WHERE email = ?");
+        $stmt->bind_param("ss",$token, $this->email,);
+        $stmt->execute();
+      
+        self::clearCache();
+        
+    }
+
+    public function validate_c(){
+       $r=self::findBy("token",$this->token);
+      
+        if(!$r){  
+            static::$errors["error"][]="no es valido el token";  
+        } 
+        if (!$this->password || $this->password=="") {
+            static::$errors["error"][] = "La contraseña es obligatoria";
+        } elseif (strlen($this->password) < 6) {
+          
+            static::$errors["error"][] = "La contraseña debe tener al menos 6 caracteres";
+        }
+        return self::$errors;
+    }
+    public function validate_f(){
+       
+        $r=$this->existeUser();
+        if (!$this->email || $this->email== "") {
+            static::$errors["error"][] = "El email es obligatorio";
+        }elseif(!$r){
+            static::$errors["error"][]="no existe el user";
+        }
+        return static::$errors;
+
+    }
     public function validate_l(){
-        if (!$this->email || $this->email= "") {
+        if (!$this->email || $this->email== "") {
             static::$errors[] = "El email es obligatorio";
         } elseif (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             static::$errors[] = "El email no es válido";
         }
 
-        if (!$this->password || $this->password="") {
+        if (!$this->password || $this->password=="") {
             static::$errors[] = "La contraseña es obligatoria";
         } elseif (strlen($this->password) < 6) {
             static::$errors[] = "La contraseña debe tener al menos 6 caracteres";
         }
+        return static::$errors;
     }
 
     public function login() {
@@ -151,9 +197,12 @@ class user extends main{
     $r=self::findAllBy("token",$this->token,["token,confirmado"]);
     if($r || $r['confirmado'] !=0 ){
         $this->token = self::$db->real_escape_string($this->token);
-        $query = "UPDATE " . static::$table . " SET token = '',confirmado=1 where token = '{$this->token}'";
+        $stmt = self::$db->prepare( "UPDATE " . static::$table . " SET token = '',confirmado=1 where token = ?");
+        $stmt->bind_param("s",$this->token);
+        $stmt->execute();
+    
       
-        self::$db->query($query);
+       
         // Limpiar cache después de actualizar
         if (self::$cacheEnabled) {
             $cacheKey = static::$table . '_find_' . $this->token;
