@@ -3,6 +3,8 @@ require_once __DIR__. '/../config/app.php';
 use controllers\paginas;
 use controllers\login;
 use controllers\API\loginA;
+use controllers\API\userA;
+use controllers\API\storesA;
 use MVC\Router;
 $r=new Router;
 //login
@@ -25,9 +27,11 @@ $r->post("/api/register/login",[loginA::class,'login']);
 $r->post("/api/register/forget",[loginA::class,'forget']);
 $r->post("/api/register/forget/reset",[loginA::class,'reset']);
 $r->get("/api/Isauth",[loginA::class,'Isauth']);
-
+$r->get("/api/user",[userA::class,'user']);
 //home
 $r->get("/home",[paginas::class,'index']);
 // API Routes(login)
+
+$r->get("/api/stores",[storesA::class,'stores']);
 
 $r->Rutas();

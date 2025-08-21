@@ -2,6 +2,7 @@
 namespace models;
 
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 class user extends main{
    
     public static $table="users";
@@ -52,6 +53,27 @@ class user extends main{
         self::clearCache();
     }
 
+    public static function desifrartoken(){
+        $key="prE!X2wW^*gH0MQ";
+        $token = $_COOKIE['access_token'] ?? null;
+            if($token){
+                $payload = JWT::decode($token, new Key($key, 'HS256'));
+                $user=user::find($payload->id);
+                if(!$user){
+                   
+                    return false;
+                    
+                }else{
+                    return true;
+                }
+            }else{
+                
+                return false;
+            }
+      
+        
+      }   
+    
     public function resetEmail(){
         $r = self::findBy("email", $this->email);
         $token = $this->create_token();

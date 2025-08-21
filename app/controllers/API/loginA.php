@@ -35,19 +35,21 @@ class loginA{
             echo  json_encode($r);
         }
     }
+
+
     public static function Isauth(){
         $key="prE!X2wW^*gH0MQ";
        
     $token = $_COOKIE['access_token'] ?? null;
         if($token){
             $payload = JWT::decode($token, new Key($key, 'HS256'));
-            echo json_encode("Usuario autenticado: " . $payload->id);
+            echo json_encode(['ok'=>$payload->id]);
             
          
             exit;
         }else{
             http_response_code(401);
-            echo json_encode("token no valdio");
+            echo json_encode(["ok"=>false]);
             exit;
         }
     }

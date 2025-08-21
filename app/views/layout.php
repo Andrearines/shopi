@@ -12,6 +12,9 @@ if(!isset($inicio)){
     $inicio=false;
 
 }
+if(!isset($stores)){
+    $stores=false;
+}
 ?>
 
 <!DOCTYPE html>
@@ -34,14 +37,17 @@ if(!isset($inicio)){
         <div class="contenido-header">
 
             <div class="barra">
-            <?php if($inicio){ ?>
-                <div id="logo"></div>
+            <?php if($stores){ ?>
+                <div id="logo-stores"></div>
             <?php }else{ ?>
                 <div class="logo_shop">
                     <img src="/build/imagenes/logo.png" alt="" srcset="">
                     <h1>shopico</h1>
                 </div>
             <?php }?>
+            <div id="bar-user">
+                
+            </div>
            </div> <!--barra-->
           
         </div>
