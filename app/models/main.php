@@ -83,7 +83,7 @@ class main
         }
         
         $id = self::$db->real_escape_string($id); 
-        $query = "SELECT * FROM " . static::$table . " WHERE id = $id LIMIT 1";
+        $query = "SELECT * FROM " . static::$table . " WHERE id = '$id' LIMIT 1";
         $result = self::$db->query($query);
 
         if ($row = $result->fetch_assoc()) {
@@ -186,21 +186,8 @@ class main
     }
 
 
-    public function save($img){
+    public function save(){
         try {
-           
-            if($img == true){
-                // Procesar imagen con manejo de memoria
-                $processedImage = $this->processImage($this->img,"users",".png");
-                if ($processedImage === false) {
-                    throw new \Exception("Error al procesar la imagen");
-                }
-                $this->img = $processedImage;
-                
-                // Liberar memoria después del procesamiento
-                gc_collect_cycles();
-            }
-            
             $columns = [];
             $values = [];
             
@@ -220,6 +207,15 @@ class main
             $query = "INSERT INTO " . static::$table . " ($columnsStr) VALUES ($valuesStr)";
             $result = self::$db->query($query);
             
+            if (!$result) {
+                error_log("Error en save: " . self::$db->error);
+                error_log("Query ejecutada: " . $query);
+                return false;
+            }
+            
+            // Asignar el ID del registro insertado al objeto
+            $this->id = self::$db->insert_id;
+            
             // Limpiar cache después de insertar
             if (self::$cacheEnabled && $result) {
                 self::clearCache();
@@ -234,7 +230,7 @@ class main
     }
     
 
-    private function processImage($img, $carpeta, $tipo){ 
+    public function processImage($img, $carpeta, $tipo){ 
         try {
             // Verificar que el archivo existe y es válido
             if (!isset($img['tmp_name']) || !file_exists($img['tmp_name'])) {
@@ -289,7 +285,7 @@ class main
             if (!file_exists($filePath)) {
                 throw new \Exception("No se pudo guardar la imagen");
             }
-            
+            gc_collect_cycles();
             return $nombre_img;
             
         } catch (\Exception $e) {

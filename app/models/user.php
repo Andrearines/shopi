@@ -68,7 +68,7 @@ class user extends main{
                     return false;
                     
                 }else{
-                    return true;
+                    return $user;
                 }
             }else{
                 

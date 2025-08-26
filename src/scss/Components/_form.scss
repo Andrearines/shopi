@@ -71,16 +71,31 @@ label{
     font-weight: 600;
     text-align: start;
 }
-input{
+input, select{
     border: none;
     background-color: rgba(255, 255, 255, 0);
     border-bottom: solid 1px rgba(226, 226, 226, 0.795);
+    padding: 0.5rem 0;
+    font-size: 1rem;
+    color: inherit;
+    outline: none;
     &:active{
         border: none;
     }
     &:focus{
         border: none;
+        border-bottom: solid 2px #488aec;
     }
+}
+
+select{
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
 }
 display: flex;
 flex-direction: column;

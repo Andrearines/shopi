@@ -4,6 +4,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function iniciarApp() {
    Isauth()
+   const cerrar_seccion = document.querySelector("#cerrar-seccion") 
+   cerrar_seccion.addEventListener("click",()=>{
+    
+   })
 }
 async function Isauth(){
 const url="/api/Isauth";
@@ -33,7 +37,12 @@ function userSttings(result){
     const welcome = document.querySelector("#name")
     const barUser = document.querySelector("#bar-user");
     const avatar = document.createElement("img")
+    const foto = document.createElement("img")
     const menu = document.createElement("img")
+    const foto_avatar = document.querySelector("#avatar")
+    const nombreP =document.createElement("p");
+    
+    nombreP.textContent= nombre
     menu.src = "/build/imagenes/icons/menu.png"
     menu.alt = "menu"
     menu.classList.add("menu")
@@ -42,6 +51,7 @@ function userSttings(result){
     menu.style.height = "58px"
   
     menu.style.objectFit = "cover"
+    menu.style.cursor= "pointer"
     menu.onclick = () => {
         window.location.href = "/user";
     }
@@ -56,6 +66,43 @@ function userSttings(result){
     avatar.style.borderRadius = "50%"
     avatar.style.objectFit = "cover"
  
+    foto.src = "/imagenes/users/"+img
+    foto.alt = nombre
+    foto.classList.add("avatar")
+    foto.id="avatar-foto"
+
+    foto.style.width = "35rem"
+    foto.style.height = "35rem"
+    foto.style.borderRadius = "50%"
+    foto.style.objectFit = "cover"
+ 
     
+    foto_avatar.appendChild(foto)
+    foto_avatar.appendChild(nombreP)
     barUser.appendChild(avatar)
-    barUser.appendChild(menu)}
+    barUser.appendChild(menu)
+
+      if(tienda_id==="" || tienda_id===null){
+
+        const store = document.querySelector("#setting-store")
+        const imgT = document.querySelector("img") 
+        const texto = document.createElement("p")
+        texto.textContent = "Aún no tienes una tienda. ¿Listo para empezar a vender?"
+        imgT.src = "/build/imagenes/tienda.png"
+        imgT.style.margin= "auto"
+        imgT.style.width= "40%"
+        texto.style.textAlign="center"
+        const btn = document.createElement("a")
+        btn.href = "/tineda/crear"
+        btn.classList.add("boton")
+        btn.textContent = "Crear tienda"
+        btn.style.display="block"
+        
+        store.appendChild(imgT)
+        store.appendChild(texto)
+        store.appendChild(btn)
+
+       
+    }
+
+}

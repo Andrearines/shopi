@@ -79,12 +79,13 @@ class loginA{
       }
     public static function register(){  
             $e = [];
-            $user = new user($_POST, $_FILES["img"] ?? []);
+            $user = new user($_POST, $_FILES);
             $user->create_token();
             $e = $user->validate_r();
             if(empty($e)){
                 $user->password_hash();
-                $r = $user->save(isset($_FILES['img']) ? true : false);
+                $user->img=$user->processImage($_FILES["img"],"users",".png");
+                $r = $user->save();
                 $email= new email;
                 $email->enviarBienvenida($user->email,$user->nombre,$user->token);
                 $json=true;

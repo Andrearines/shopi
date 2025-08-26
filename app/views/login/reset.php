@@ -4,7 +4,7 @@
         <form id="form"class="form" method="post">
             <div class="form-group">
                 <label for="">password</label>
-                <input type="text" name="password" id="password">
+                <input type="password" name="password" id="password">
                 <input type="hidden" name="token" id="token" value="<?= htmlspecialchars($_GET['token']) ?>">
                 
             </div>

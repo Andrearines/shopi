@@ -5,6 +5,7 @@ use controllers\login;
 use controllers\API\loginA;
 use controllers\API\userA;
 use controllers\API\storesA;
+use controllers\API\categoriasA;
 use MVC\Router;
 $r=new Router;
 //login
@@ -31,9 +32,15 @@ $r->get("/api/user",[userA::class,'user']);
 //client
 $r->get("/home",[paginas::class,'index']);
 $r->get("/user",[paginas::class,'user']);
+$r->post("/user",[paginas::class,'user']);
+$r->get("/tineda/crear",[paginas::class,'storesCreate']);
+$r->post("/tineda/crear",[paginas::class,'storesCreate']);
 // API Routes(cliente)
 
 $r->get("/api/stores",[storesA::class,'stores']);
 $r->get("/api/stores/search",[storesA::class,'storesSeach']);
+$r->get("/api/stores/categories",[categoriasA::class,'all']);
+$r->get("/api/stores/create",[storesA::class,'storesCreate']);
+$r->post("/api/stores/create",[storesA::class,'storesCreate']);
 
 $r->Rutas();
