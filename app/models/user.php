@@ -50,9 +50,13 @@ class user extends main{
         $stmt = self::$db->prepare("UPDATE users SET password = ? ,token = '' WHERE token = ?");
         $stmt->bind_param("ss", $this->password, $this->token);
         $stmt->execute();
+        $stmt->close();
+        
+        // Limpiar caché completo después de reset de contraseña
         self::clearCache();
     }
 
+  
     public static function desifrartoken(){
         $key="prE!X2wW^*gH0MQ";
         $token = $_COOKIE['access_token'] ?? null;
@@ -83,7 +87,9 @@ class user extends main{
         $stmt = self::$db->prepare("UPDATE " . static::$table . " SET token = ? WHERE email = ?");
         $stmt->bind_param("ss",$token, $this->email,);
         $stmt->execute();
-      
+        $stmt->close();
+        
+        // Limpiar caché completo después de actualizar email
         self::clearCache();
         
     }
@@ -173,6 +179,9 @@ class user extends main{
             'httponly' => true,
             'samesite' => 'Lax'
         ]);
+        
+        // Limpiar caché después del login exitoso
+        self::clearCache();
        
     }
     public function validate_r()
@@ -222,15 +231,11 @@ class user extends main{
         $stmt = self::$db->prepare( "UPDATE " . static::$table . " SET token = '',confirmado=1 where token = ?");
         $stmt->bind_param("s",$this->token);
         $stmt->execute();
-    
-      
-       
-        // Limpiar cache después de actualizar
-        if (self::$cacheEnabled) {
-            $cacheKey = static::$table . '_find_' . $this->token;
-            unset(self::$cache[$cacheKey]);
-        }
-
+        $stmt->close();
+        
+        // Limpiar caché completo después de verificar usuario
+        self::clearCache();
+        
         return true;
     }else{
         static::$errors[] = "no es valido o a espirado";
@@ -243,6 +248,16 @@ class user extends main{
             return true;
         }else{
             return false;
+        }
+    }
+    
+    /**
+     * Limpia caché específico de un usuario
+     */
+    public static function clearUserCache($userId) {
+        if (self::$cacheEnabled && $userId) {
+            $cacheKey = static::$table . '_find_' . $userId;
+            unset(self::$cache[$cacheKey]);
         }
     }
     

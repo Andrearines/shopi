@@ -72,6 +72,7 @@ if(!isset($stores)){
     <script src="/build/js/modernizr.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/build/js/sweetalert-config.js"></script>
+    <!--<script src="/build/js/app.js"></script>-->
     </body>
     </html>
 

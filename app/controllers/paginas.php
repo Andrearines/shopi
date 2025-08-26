@@ -4,6 +4,10 @@ use MVC\Router;
 
 class paginas{
 
+    public static function user(Router $router){
+        
+        $router->view('home/user.php',['inicio'=> true,"script"=> "pages/user"]);
+    }
     public static function index(Router $router){
         $router->view('home/index.php',['inicio'=> true,"script"=> "pages/home"]);
     }

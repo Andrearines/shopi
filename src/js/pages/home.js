@@ -14,8 +14,37 @@ const  result = await r.json()
  }else{
     UserActivation(result.ok)
     tiendas()
+    buscador()
  }
 }
+
+function buscador(){
+const input = document.getElementById('search-store');
+const tiendas_container = document.getElementById('store-container');
+
+input.addEventListener('input',async () => {
+    const valor = input.value.trim();
+    if (valor.length === 0) {
+        tiendas()
+    }else{
+        const url="/api/stores/search?search="+valor;
+        const r = await fetch(url, { credentials: "include" });
+        const  result = await r.json()    
+
+       
+      
+            if(result.stores.length === 0){
+                tiendas_container.innerHTML = 'store-container';
+                tiendas_container.innerHTML = 'no existe esa tienda';
+                notify('no existe esa tienda', 'no existe esa tienda', 'error', 2000);
+            }else{
+                
+            }
+        
+
+    }})
+}
+
 async function UserActivation(id){
     const url="/api/user";
     const r = await fetch(url, { credentials: "include" });

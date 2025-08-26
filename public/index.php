@@ -28,10 +28,12 @@ $r->post("/api/register/forget",[loginA::class,'forget']);
 $r->post("/api/register/forget/reset",[loginA::class,'reset']);
 $r->get("/api/Isauth",[loginA::class,'Isauth']);
 $r->get("/api/user",[userA::class,'user']);
-//home
+//client
 $r->get("/home",[paginas::class,'index']);
-// API Routes(login)
+$r->get("/user",[paginas::class,'user']);
+// API Routes(cliente)
 
 $r->get("/api/stores",[storesA::class,'stores']);
+$r->get("/api/stores/search",[storesA::class,'storesSeach']);
 
 $r->Rutas();
