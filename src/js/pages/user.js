@@ -53,7 +53,7 @@ function userSttings(result){
     menu.style.objectFit = "cover"
     menu.style.cursor= "pointer"
     menu.onclick = () => {
-        window.location.href = "/user";
+        window.location.href = "/home";
     }
 
     avatar.src = "/imagenes/users/"+img
@@ -61,8 +61,8 @@ function userSttings(result){
     avatar.classList.add("avatar")
     avatar.id="avatar"
     
-    avatar.style.width = "58px"
-    avatar.style.height = "58px"
+    avatar.style.width = "8rem"
+    avatar.style.height = "8rem"
     avatar.style.borderRadius = "50%"
     avatar.style.objectFit = "cover"
  

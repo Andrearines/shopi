@@ -20,25 +20,36 @@ const  result = await r.json()
 
 function buscador(){
 const input = document.getElementById('search-store');
-const tiendas_container = document.getElementById('store-container');
+let tiendas_container = document.getElementById('store-container');
 
 input.addEventListener('input',async () => {
     const valor = input.value.trim();
-    if (valor.length === 0) {
+    if (valor.length === 0 || valor===null) {
         tiendas()
     }else{
         const url="/api/stores/search?search="+valor;
         const r = await fetch(url, { credentials: "include" });
         const  result = await r.json()    
-
-       
-      
-            if(result.stores.length === 0){
-                tiendas_container.innerHTML = 'store-container';
-                tiendas_container.innerHTML = 'no existe esa tienda';
-                notify('no existe esa tienda', 'no existe esa tienda', 'error', 2000);
-            }else{
-                
+            if(result.ok === false){
+                notify('Sesión expirada', 'Inicia sesión nuevamente', 'error', 2000);
+                window.location.href = "/";
+            }else if(result.stores && result.stores.length === 0){
+                tiendas_container.innerHTML = '';
+                tiendas_container.innerHTML = '<p>No existe esa tienda</p>';
+                notify('Búsqueda sin resultados', 'No existe esa tienda', 'error', 2000);
+            }else if(result.stores){
+              tiendas_container.innerHTML = '';
+                result.stores.forEach(store => {
+                    const storeElement = document.createElement('div');
+                    storeElement.classList.add('store-card');
+                    storeElement.innerHTML = `
+                        <img src="/imagenes/stores/${store.img}" alt="${store.nombre}">
+                        <h2>${store.nombre}</h2>
+                        <p>${store.descripcion}</p>
+                        <a href="/store/${store.id}" class="boton-azul">Ver tienda</a>
+                    `;
+                    tiendas_container.appendChild(storeElement);
+                });
             }
         
 
@@ -69,6 +80,7 @@ function userSttings(result){
     menu.style.height = "58px"
   
     menu.style.objectFit = "cover"
+     menu.style.cursor= "pointer"
     menu.onclick = () => {
         window.location.href = "/user";
     }
@@ -78,8 +90,8 @@ function userSttings(result){
     avatar.classList.add("avatar")
     avatar.id="avatar"
     
-    avatar.style.width = "58px"
-    avatar.style.height = "58px"
+    avatar.style.width = "8rem"
+    avatar.style.height = "8rem"
     avatar.style.borderRadius = "50%"
     avatar.style.objectFit = "cover"
  
@@ -111,7 +123,8 @@ async function tiendas(){
 
         notify('cierra session', 'no es valida tu session', 'error', 2000);
       
-    }else if(result.stores.length === 0){
+    }else if(!result || result==[]){
+        tiendas_container.innerHTML = '';
         const store = document.querySelector("#store-container")
         const texto = document.createElement("p")
         texto.textContent = "Aún no hay tiendas todavia. ¿Listo para empezar a vender?"
@@ -122,7 +135,19 @@ async function tiendas(){
         btn.textContent = "Crear tienda"
         store.appendChild(btn)
     }else {
-        
+        const tiendas_container = document.querySelector("#store-container");
+        tiendas_container.innerHTML = '';
+                result.forEach(store => {
+                    const storeElement = document.createElement('div');
+                    storeElement.classList.add('store-card');
+                    storeElement.innerHTML = `
+                        <img src="/imagenes/stores/${store.img}" alt="${store.nombre}">
+                        <h2>${store.nombre}</h2>
+                        <p>${store.descripcion}</p>
+                        <a href="/store?id=${store.id}" class="boton-azul">Ver tienda</a>
+                    `;
+                    tiendas_container.appendChild(storeElement);
+        });
     }
     
 }
