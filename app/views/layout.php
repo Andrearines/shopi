@@ -1,9 +1,6 @@
 <?php
 
-if(!isset($_SESSION)){
-session_start();
-}
-$auth = $_SESSION['admin'] ?? null;
+
 if(!isset($barra_frotante)){
     $barra_frotante=false;
 }

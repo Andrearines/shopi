@@ -103,6 +103,53 @@ function userSttings(result){
         store.appendChild(btn)
 
        
+    }else{
+        tienda(tienda_id)
     }
+}
+
+async function tienda(tienda_id){
+
+    const data = await fetch("/api/stores/find?id="+tienda_id, { credentials: "include" });
+    const result = await data.json();
+    const {id, nombre, descripcion, categoria_id, estado, fecha_creacion,img,banner}= result
+
+    const store = document.querySelector("#setting-store")
+    store.classList.add("store-user")
+    const estadoContainer = document.createElement("div")
+    estadoContainer.classList.add("estado-container")
+    const imgT = document.createElement("img") 
+    const texto = document.createElement("p")
+    const estadoT = document.createElement("p")
+    const fechaT = document.createElement("p")
+
+    const btn = document.createElement("a")
+   estadoT.textContent = "Estado: " + estado
+   estadoT.style.margin= "auto"
+   estadoT.style.fontSize="1.5rem"
+   estadoT.style.fontWeight="bold"
+   
+   fechaT.textContent = "Fecha de creacion: " + fecha_creacion
+   fechaT.style.margin= "auto"
+   fechaT.style.fontSize="1.5rem"
+   
+    imgT.src = "/imagenes/stores/"+img
+    imgT.alt = nombre
+    imgT.style.margin= "auto"
+    imgT.style.width= "20rem"
+    imgT.style.height= "20rem"
+    imgT.style.borderRadius = "50%"
+    imgT.style.objectFit = "cover"
+    btn.href = "/tienda/view?id="+id
+    btn.classList.add("boton")
+    btn.textContent = "Ver tienda"
+    btn.style.display="block"
+    
+    store.appendChild(imgT)
+    store.appendChild(texto)
+    estadoContainer.appendChild(estadoT)
+    estadoContainer.appendChild(fechaT)
+    store.appendChild(estadoContainer)
+    store.appendChild(btn)
 
 }
