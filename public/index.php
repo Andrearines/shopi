@@ -6,8 +6,11 @@ use controllers\storeC;
 use controllers\API\loginA;
 use controllers\API\userA;
 use controllers\API\storesA;
+use controllers\API\productosC;
 use controllers\API\categoriasA;
 use controllers\API\storeA;
+use controllers\API\categorias_producto;
+use controllers\API\tallasC;
 use MVC\Router;
 $r=new Router;
 //login
@@ -41,11 +44,11 @@ $r->post("/tineda/crear",[paginas::class,'storesCreate']);
 //client store admin
 $r->get("/tienda/view",[storeC::class,'storespanel']);
 $r->post("/tienda/view",[storeC::class,'storespanel']);
-$r->get("/api/stores/IsTienda",[storeA::class,'IsTienda']);
-$r->get("/api/stores/earnings",[storeA::class,'getEarnings']);
+$r->get("/tienda/view/productos",[storeC::class,'storesCreateP']);
 
 
 // API Routes(store)
+$r->get("/api/stores/IsTienda",[storeA::class,'IsTienda']);
 $r->get("/api/stores",[storesA::class,'stores']);
 $r->get("/api/stores/search",[storesA::class,'storesSeach']);
 $r->get("/api/stores/categories",[categoriasA::class,'all']);
@@ -53,4 +56,19 @@ $r->get("/api/stores/create",[storesA::class,'storesCreate']);
 $r->post("/api/stores/create",[storesA::class,'storesCreate']);
 $r->get("/api/stores/find",[storesA::class,'find']);
 
+
+//API Routers(productos)
+$r->get("/api/stores/productos",[productosC::class,'all']);
+$r->get("/api/stores/productos/search",[productosC::class,'search']);
+$r->post("/api/stores/productos/create",[productosC::class,'create']);
+$r->get("/api/stores/productos/find",[productosC::class,'find']);
+$r->post("/api/stores/productos/update",[productosC::class,'update']);
+$r->get("/api/stores/productos/delete",[productosC::class,'delete']);
+$r->get("/api/stores/productos/categories",[categorias_producto::class,'all']);
+$r->get("/api/stores/tallas",[tallasC::class,'all']);
+$r->get("/api/stores/tallasP",[tallasC::class,'allP']);
+
+// API Routes(categorias)
+$r->get("/api/stores/categories",[categoriasA::class,'all']);
+$r->get("/api/stores/categories/search",[categoriasA::class,'search']);
 $r->Rutas();

@@ -193,7 +193,7 @@ class main
             
             foreach (static::$columnDB as $column) {
                 // Excluir siempre el campo 'id'
-                if ($column !== 'id' and $column !== 'tienda_id' && property_exists($this, $column)) {
+                if ($column !== 'id' && property_exists($this, $column)) {
                     $value = $this->$column;
                     $value = self::$db->real_escape_string($value);
                     $columns[] = "`$column`";

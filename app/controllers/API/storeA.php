@@ -20,6 +20,7 @@ class storeA{
         }
     }
 
+  
     public static function getEarnings(){
         $user = user::desifrartoken();
         if(!$user){

@@ -184,6 +184,51 @@ class user extends main{
         self::clearCache();
        
     }
+
+    public function save(){
+        try {
+            $columns = [];
+            $values = [];
+            
+            foreach (static::$columnDB as $column) {
+                // Excluir siempre el campo 'id'
+                if ($column !== 'id' and $column !== 'tienda_id' && property_exists($this, $column)) {
+                    $value = $this->$column;
+                    $value = self::$db->real_escape_string($value);
+                    $columns[] = "`$column`";
+                    $values[] = "'$value'";
+                }
+            }
+            
+            $columnsStr = implode(', ', $columns);
+            $valuesStr = implode(', ', $values);
+            
+            $query = "INSERT INTO " . static::$table . " ($columnsStr) VALUES ($valuesStr)";
+            $result = self::$db->query($query);
+            
+            if (!$result) {
+                error_log("Error en save: " . self::$db->error);
+                error_log("Query ejecutada: " . $query);
+                return false;
+            }
+            
+            // Asignar el ID del registro insertado al objeto
+            $this->id = self::$db->insert_id;
+            
+            // Limpiar cache después de insertar
+            if (self::$cacheEnabled && $result) {
+                self::clearCache();
+            }
+            
+            return true;
+            
+        } catch (\Exception $e) {
+            error_log("Error en save: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+
     public function validate_r()
     {
        static::$errors = [];
