@@ -32,7 +32,7 @@ function modalC(){
         <div class="form-c" id="crearF">
             <span class="close">&times;</span>
             <h2>Crear Producto</h2>
-            <form class="form" id="form">
+            <form class="form" id="form" method="post">
             <div class="form-group">
             <label for="nombre">Nombre</label>
                 <input type="text" id="nombre" name="nombre" placeholder="Nombre">
@@ -75,10 +75,10 @@ function modalC(){
         .then(res => res.json())
         .then(data => {
             if(data.ok){
-                notify('producto', 'creado correctamente(debe añadir tallas)', 'success', 2000);
-
+                
                 modal.remove()
                 productos()
+                notify('producto', 'creado correctamente(debe añadir tallas)', 'success', 5000);
             }else{
                 notify('error',data.error.join(" ,"), 'error', 4000);
             }
@@ -91,23 +91,35 @@ function modalC(){
     categorias()
 }
 
-async function categorias(){
+async function categorias(id){
     const url="/api/stores/productos/categories";
     const r = await fetch(url, { credentials: "include" });
     const  result = await r.json()
     if(result.ok===false){
         notify('cierra session', 'no es valida tu session', 'error', 2000);
+        window.location.href = "/home";
       
     }else{
         const select = document.querySelector("#categoria_id")
         select.innerHTML = ""   
        
+       
         result.forEach(categoria => {
+            if(id){
+                if(categoria.id == id){
+                    const option = document.createElement("option")
+                    option.value = categoria.id
+                    option.textContent = categoria.nombre
+                    option.selected = true
+                    select.appendChild(option)
+                }
+            }else{
             const option = document.createElement("option")
             option.value = categoria.id
             option.textContent = categoria.nombre
-            select.appendChild(option)
+            select.appendChild(option)}
         })
+    
     }
 }
 
@@ -218,8 +230,11 @@ async function productos(){
         }
            
         }
+
+       
+        const container_C   = document.querySelector("#container_C")
+        container_C.innerHTML = ""
         result.forEach(producto => {
-            const container_C   = document.querySelector("#container_C")
             const container = document.createElement("div")
             container.classList.add("store-card")
             const img = document.createElement("img")
@@ -276,6 +291,100 @@ async function productos(){
         })
     }
 
+    async function eliminar(id){
+        const producto = await fetch("/api/stores/productos/delete?id="+id, { credentials: "include" })
+        const productoData = await producto.json()
+        if(productoData.ok){
+            notify('producto', 'eliminado correctamente', 'success', 5000);
+           productos()
+        }else{
+            notify('error',productoData.error.join(" ,"), 'error', 5000);
+        }
+    }
+
+    async function editar(id){
+        
+        const producto = await fetch("/api/stores/productos/find?id="+id, { credentials: "include" })
+        const productoData = await producto.json()
+
+        if(document.getElementById("modalC")){
+            document.getElementById("modalC").remove()
+            return
+        }
+    
+        const modal = document.createElement("div")
+        modal.classList.add("modal")
+        modal.id="modalC"
+        modal.innerHTML = `
+        
+    
+            <div class="form-c" id="crearF">
+                <span class="close">&times;</span>
+                <h2>Editar Producto</h2>
+                <form class="form" id="form" method="post">
+                <div class="form-group">
+                <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Nombre" value="${productoData.nombre}">
+                    <label for="precio">Precio: $</label>
+                    <input type="text" id="precio" name="precio" placeholder="Precio" value="${productoData.precio}">
+                    </div>
+                    <div class="form-group">
+                    <label for="descripcion_larga">descripcion</label>
+                    <input type="text" id="descripcion_larga" name="descripcion_larga" placeholder="descripcion" value="${productoData.descripcion_larga}">
+                    <label for="categoria_id">Categoria</label>
+                    <select id="categoria_id" name="categoria_id">
+                        
+                    </select>
+                    <label for="img">Imagen imagen nueva</label>
+                    <input type="file" id="img" name="img">
+                    </div>
+                    <input type="hidden" id="id" name="id" value="${productoData.id}">
+                    <input type="submit" value="Editar" class="boton">
+                    </form>
+                    
+                
+            </div>
+        `
+    
+    
+        document.body.appendChild(modal)
+        const cancel = document.querySelector(".close")
+        cancel.addEventListener("click", () => {
+            modal.remove()
+        })
+        const form = document.querySelector("#form")
+        form.addEventListener("submit", (e) => {
+            e.preventDefault()
+            const data = new FormData(document.querySelector("#form"))
+           
+            fetch("/api/stores/productos/edit", {
+                method: "POST",
+                body: data,
+                credentials: "include"
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.ok){
+                    notify('producto', 'editado correctamente', 'success', 2000);
+    
+                    modal.remove()
+                    productos()
+                    
+                }else{
+                    notify('error',data.error.join(" ,"), 'error', 5000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                notify('Error', 'intente una imagen mas pequeña o contacte el soporte', 'error', 5000);
+            });
+        })
+        categorias(productoData.categoria_id)
+
+        
+
+    }
+
     async function tallas(productoId) {
         if(document.getElementById("modalT")){
             document.getElementById("modalT").remove()
@@ -313,14 +422,15 @@ async function productos(){
     const response = await fetch(`/api/stores/tallasP?id=${productoId}`, { credentials: "include" });
     const result = await response.json();
 
-    const tallasContainer = modal.querySelector("#tallas");
-    tallasContainer.innerHTML = '';
+    const tallasContainer = document.getElementById("tallas");
+  
 
     if (result.length === 0) {
         // Si no hay tallas asignadas, traer todas las tallas
         const data = await fetch("/api/stores/tallas", { credentials: "include" });
         const allTallas = await data.json();
-
+       
+       
         allTallas.forEach(talla => {
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -335,12 +445,13 @@ async function productos(){
         result.forEach(talla => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${talla.nombre}</td>
+                <td>${talla.talla_nombre}</td>
                 <td><input type="number" min="0" value="${talla.cantidad}" id="stock_${talla.talla_id}" data-talla-id="${talla.talla_id}" class="form-control"></td>
                 <td><input type="number" min="0" step="0.01" value="${talla.precio_unitario}" id="precio_${talla.talla_id}" data-talla-id="${talla.talla_id}" class="form-control"></td>
             `;
             tallasContainer.appendChild(row);
         });
+        
     }
 
     // Cerrar modal
@@ -360,24 +471,32 @@ async function productos(){
             const stock = input.value;
             const precio = modal.querySelector(`#precio_${tallaId}`).value;
 
-            if (stock > 0) {
+          
                 tallasData.push({
                     producto_id: productoId,
                     talla_id: tallaId,
                     cantidad: stock,
                     precio_unitario: precio
                 });
-            }
+            
         });
 
-        await fetch("/api/stores/guardarTallas", {
+         const r = await fetch("/api/stores/guardarTallas", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
             body: JSON.stringify({ producto_id: productoId, tallas: tallasData })
         });
 
+        const result = await r.json();
         modal.remove();
+
+        if(result.ok === true){
+
+            notify("tallas guardadas","completado","success",2000)
+        }else{
+            notify("error al guardar tallas","error","error",2000)
+        }
     });
 }
 

@@ -77,13 +77,13 @@ class productosC{
             echo json_encode(["ok"=>false, "error"=>"No autenticado"]);
         }
     }
-    public static function update(){
+    public static function edit(){
         $user=user::desifrartoken();
         if($user){
             $admin = user::find($user->id);
             if($admin->tienda_id){
                 if(empty($_POST['id'])){
-                    echo json_encode(["ok"=>false, "message"=>"ID de producto requerido"]);
+                    echo json_encode(["error"=>"ID de producto requerido"]);
                     return;
                 }
               
@@ -101,29 +101,34 @@ class productosC{
                         $imagen_procesada = $productos->processImage($_FILES['img'],"productos",".png");
                         if($imagen_procesada){
                             $productos->imagen_url = $imagen_procesada;
+                            $img =productos::delete_archivo("productos", $producto_existente->imagen_url);      
                         }else{
-                            echo json_encode(["ok"=>false, "message"=>"Error procesando imagen"]);
+                            echo json_encode(["error"=>"Error procesando imagen"]);
                             return;
                         }
                     }
                     
-                    if(empty($productos->validate_u())){
+                    if(empty( $r= $productos->validate_u())){
+                        $productos->updated_at=date("Y-m-d H:i:s");
+                        $productos->created_at=$producto_existente->created_at;
                         if($productos->update($_POST['id'])){
-                            echo json_encode(["ok"=>true, "message"=>"Producto actualizado exitosamente"]);
+                         
+                                echo json_encode(["ok"=>true, "message"=>"Producto actualizado exitosamente"]);
+                            
                         }else{
-                            echo json_encode(["ok"=>false, "message"=>"Error actualizando producto"]);
+                            echo json_encode(["error"=>"Error actualizando producto"]);
                         }
                     }else{
-                        echo json_encode(["ok"=>false, "errors"=>$productos->getErrors()]);
+                        echo json_encode($r);
                     }
                 }else{
-                    echo json_encode(["ok"=>false, "message"=>"Producto no encontrado o no autorizado"]);
+                    echo json_encode(["error"=>"Producto no encontrado o no autorizado"]);
                 }
             }else{
-                echo json_encode(["ok"=>false, "message"=>"Usuario sin tienda asignada"]);
+                echo json_encode(["error"=>"Usuario sin tienda asignada"]);
             }
         }else{
-            echo json_encode(["ok"=>false, "message"=>"No autenticado"]);
+            echo json_encode(["error"=>"No autenticado"]);
         }
     }
     public static function delete(){
@@ -136,8 +141,17 @@ class productosC{
             
             $productos=productos::find($_GET['id']);
             if($productos && $productos->tienda_id == $user->tienda_id){
+
+                productos::exec("DELETE FROM talla_stocks WHERE producto_id = " . intval($productos->id));
+
                 if($productos->delete()){
-                    echo json_encode(["ok"=>true, "message"=>"Producto eliminado exitosamente"]);
+                    $img =productos::delete_archivo("productos", $productos->imagen_url);      
+                    if($img == true){
+
+                        echo json_encode(["ok"=>true]);
+                    }else{
+                        echo json_encode($img);
+                    }
                 }else{
                     echo json_encode(["ok"=>false, "message"=>"Error eliminando producto"]);
                 }

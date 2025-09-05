@@ -11,9 +11,11 @@ use controllers\API\categoriasA;
 use controllers\API\storeA;
 use controllers\API\categorias_producto;
 use controllers\API\tallasC;
+use controllers\API\tallas_stockC;
 use MVC\Router;
 $r=new Router;
 //login
+
 $r->get("/",[login::class,'login']);
 $r->post("/",[login::class,'login']);
 $r->get("/register",[login::class,'register']);
@@ -44,7 +46,7 @@ $r->post("/tineda/crear",[paginas::class,'storesCreate']);
 //client store admin
 $r->get("/tienda/view",[storeC::class,'storespanel']);
 $r->post("/tienda/view",[storeC::class,'storespanel']);
-$r->get("/tienda/view/productos",[storeC::class,'storesCreateP']);
+$r->get("/tienda/view/productos",[storeC::class,'storeGRUD']);
 
 
 // API Routes(store)
@@ -60,13 +62,18 @@ $r->get("/api/stores/find",[storesA::class,'find']);
 //API Routers(productos)
 $r->get("/api/stores/productos",[productosC::class,'all']);
 $r->get("/api/stores/productos/search",[productosC::class,'search']);
-$r->post("/api/stores/productos/create",[productosC::class,'create']);
 $r->get("/api/stores/productos/find",[productosC::class,'find']);
 $r->post("/api/stores/productos/update",[productosC::class,'update']);
 $r->get("/api/stores/productos/delete",[productosC::class,'delete']);
 $r->get("/api/stores/productos/categories",[categorias_producto::class,'all']);
 $r->get("/api/stores/tallas",[tallasC::class,'all']);
-$r->get("/api/stores/tallasP",[tallasC::class,'allP']);
+$r->get("/api/stores/tallasP",[tallas_stockC::class,'allP']);
+$r->post("/api/stores/guardarTallas",[tallas_stockC::class,'guardarTallasStock']);
+
+//API Routes(GRUD)
+$r->post("/api/stores/productos/create",[productosC::class,'create']);
+$r->post("/api/stores/productos/delete",[productosC::class,'delete']);
+$r->post("/api/stores/productos/edit",[productosC::class,'edit']);
 
 // API Routes(categorias)
 $r->get("/api/stores/categories",[categoriasA::class,'all']);

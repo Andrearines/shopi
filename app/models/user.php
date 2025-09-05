@@ -168,6 +168,7 @@ class user extends main{
             "login" => true,
             "moderador" => $user->moderador ?? 0,
             "img" => $user->img,
+            "tienda_id" => $user->tienda_id
         ];
     
         $token= JWT::encode($payload, $key, 'HS256');

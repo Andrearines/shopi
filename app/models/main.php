@@ -48,6 +48,11 @@ class main
         }
     }
 
+    public static function exec($query){
+        return self::$db->query($query);
+    }
+    
+
     public static function SQL($query){
         $result = self::$db->query($query);
         $array = [];
@@ -163,6 +168,17 @@ class main
         }
         
         return $result;
+    }
+
+    public static function delete_archivo($carpeta ,$archivo){
+    // Construir la ruta completa
+    $rutaCompleta = __DIR__."'/../../public/imagenes/". $carpeta."/" . $archivo;
+    
+    
+
+            unlink($rutaCompleta);
+            return true;
+   
     }
 
    
