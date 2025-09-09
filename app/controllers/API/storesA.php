@@ -63,6 +63,20 @@ class storesA{
       }
     }
 
+    public static function existe(){
+      $user=user::desifrartoken();
+      if($user){
+        $stores=stores::existTienda($_GET['id']);
+        if($stores){
+          echo json_encode($stores);
+        }else{
+          echo json_encode(["ok"=>false]);
+        }
+      }else{
+          echo json_encode(["ok"=>false]);
+      }
+    }
+
     public static function stores(){
        $user=user::desifrartoken();
        if($user){

@@ -47,11 +47,13 @@ $r->post("/tineda/crear",[paginas::class,'storesCreate']);
 $r->get("/tienda/view",[storeC::class,'storespanel']);
 $r->post("/tienda/view",[storeC::class,'storespanel']);
 $r->get("/tienda/view/productos",[storeC::class,'storeGRUD']);
+$r->get("/store",[paginas::class,'stores']);
 
 
 // API Routes(store)
 $r->get("/api/stores/IsTienda",[storeA::class,'IsTienda']);
 $r->get("/api/stores",[storesA::class,'stores']);
+$r->get("/api/stores/existe",[storesA::class,'existe']);
 $r->get("/api/stores/search",[storesA::class,'storesSeach']);
 $r->get("/api/stores/categories",[categoriasA::class,'all']);
 $r->get("/api/stores/create",[storesA::class,'storesCreate']);

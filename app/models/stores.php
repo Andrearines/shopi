@@ -24,6 +24,18 @@ class stores extends main{
         $this->banner = $img["banner"] ?? [];
     }
     
+    public static function existTienda($id){
+        $id=self::$db->real_escape_string($id);
+        $query="SELECT * FROM " . static::$table . " WHERE id = $id";
+        $result = self::$db->query($query);
+        if($result->num_rows == 0){
+           return false;
+        }else{
+            $data = $result->fetch_assoc();
+            return $data;
+        }
+    }
+
     public function validate()
     {
         if(empty($this->nombre)){
@@ -46,6 +58,7 @@ class stores extends main{
     }
 
     public static function search($search){
+        $search=self::$db->real_escape_string($search);
         // Cache para búsquedas frecuentes
         if (self::$cacheEnabled) {
             $cacheKey = static::$table . '_search_' . md5($search);

@@ -1,0 +1,31 @@
+.store-P{
+ 
+    .store-banner{
+        #banner{
+            @include tablet(){
+                height: 50vh;
+            }
+            height: 30vh;
+            width: 100%;
+            object-fit: cover;
+            margin-bottom: 2rem;
+        }
+    }
+
+    #store-products{
+        @include grid(1,0rem);
+        .Product-card{
+            margin: 1rem auto;
+        }
+        margin-bottom: 2rem;
+        min-height: 30vh;
+        @include tablet(){
+            .Product-card{
+                margin: 0;
+                margin-bottom: 1rem;
+            }
+            @include grid(3,1rem);
+        }
+    }
+
+}

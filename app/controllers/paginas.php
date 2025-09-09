@@ -14,6 +14,9 @@ class paginas{
     public static function index(Router $router){
         $router->view('home/index.php',['inicio'=> true,"script"=> "pages/home"]);
     }
+    public static function stores(Router $router){
+        $router->view('home/stores/store.php',['inicio'=> true,"script"=> "pages/stores/stores" ,"stores"=> true]);
+    }
      //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
